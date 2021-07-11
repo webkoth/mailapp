@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Spatie\Newsletter\Newsletter;
 
@@ -32,11 +33,24 @@ class NewsletterController extends Controller
     public function store(Request $request)
     {
 
+
+        $request->validate([
+            'email' => 'required|string|unique:users'
+        ]);
+
         if (!$this->newsLatter->isSubscribed($request->email) )
         {
             $this->newsLatter->subscribe($request->email, ['FNAME' => 'Foo', 'LNAME' => 'Bar']);
+
+            User::create([
+                'email' => $request->email
+            ]);
+
             return back()->with('success', 'Thanks For Subscribe');
         }
+
+
+
         return back()->with('failure', 'Sorry! You have already subscribed ');
 
     }
@@ -52,22 +66,26 @@ class NewsletterController extends Controller
 
     public function edit($email)
     {
+
         $member = $this->newsLatter->getMember($email);
-        return view('edit', compact('member'))->with('email', $member['email_address']);
+
+        return view('edit', compact('member'));
     }
 
-    public function update(Request $request)
+    public function update(Request $request, $email)
     {
-        $member = $this->newsLatter->subscribeOrUpdate($request->email_address, ['FNAME' => $request->full_name, 'LNAME' => 'Bar']);
+        $member = $this->newsLatter->getMember($email);
 
-        return back();
+        $this->newsLatter->updateEmailAddress($member['email_address'], $request->email_address);
+
+        return redirect()->route('newsletters.edit', [$member])->with('success', 'Email address updated!');
     }
 
     public function destroy($email)
     {
         $this->newsLatter->delete($email);
 
-        return back()->with("success", "Member delete!");
+        return back()->with('success', 'Member delete!');
 
     }
 }

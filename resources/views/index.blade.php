@@ -16,10 +16,9 @@
         <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-3">
             <a href="{{ route('newsletters.create') }}" class="btn btn-info me-md-2" type="button">Add member</a>
         </div>
-        <table class="table table-success table-striped">
+        <table class="table table-success table-striped shadow">
             <thead>
             <tr>
-                <th scope="col">ID</th>
                 <th scope="col">Email</th>
                 <th scope="col">Subscribed</th>
                 <th scope="col">Action</th>
@@ -28,7 +27,6 @@
             <tbody>
             @foreach ($membersCollection as $member)
                 <tr>
-                    <th scope="row">{{ $member['id'] }}</th>
                     <td>{{ $member['email_address'] }}</td>
                     <td><span class="badge rounded-pill bg-light text-dark">{{ $member['status'] }}</span></td>
                     <td>
