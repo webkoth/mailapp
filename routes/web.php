@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\MemberController;
+use App\Http\Controllers\ListController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,9 +18,9 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::get('/', function () {
-    return redirect()->route('newsletters.index');
+    return redirect()->route('members.index');
 });
 
-Route::resource('newsletters', NewsletterController::class);
-
+Route::resource('members', MemberController::class);
+Route::resource('lists', ListController::class);
 

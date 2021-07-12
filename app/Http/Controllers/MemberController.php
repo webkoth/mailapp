@@ -4,17 +4,25 @@ namespace App\Http\Controllers;
 
 
 use App\Models\User;
+use DrewM\MailChimp\MailChimp;
 use Illuminate\Http\Request;
 use Spatie\Newsletter\Newsletter;
 
-class NewsletterController extends Controller
+
+class MemberController extends Controller
 {
 
     protected $newsLatter;
 
+    protected $mailchimp;
+
+    /**
+     * @throws \Exception
+     */
     public function __construct(Newsletter $newsletter)
     {
         $this->newsLatter = $newsletter;
+         $this->mailchimp = new MailChimp(env('MAILCHIMP_APIKEY'));
     }
 
     public function index()
@@ -33,14 +41,13 @@ class NewsletterController extends Controller
     public function store(Request $request)
     {
 
-
         $request->validate([
             'email' => 'required|string|unique:users'
         ]);
 
         if (!$this->newsLatter->isSubscribed($request->email) )
         {
-            $this->newsLatter->subscribe($request->email, ['FNAME' => 'Foo', 'LNAME' => 'Bar']);
+            $this->newsLatter->subscribe($request->email);
 
             User::create([
                 'email' => $request->email
@@ -49,9 +56,7 @@ class NewsletterController extends Controller
             return back()->with('success', 'Thanks For Subscribe');
         }
 
-
-
-        return back()->with('failure', 'Sorry! You have already subscribed ');
+        return redirect()->route('newsletters.create');
 
     }
 
@@ -59,9 +64,9 @@ class NewsletterController extends Controller
     {
         $member = $this->newsLatter->getMember($email);
 
+        dd($this->mailchimp->get('lists'));
+
         return view('show', compact('member'));
-
-
     }
 
     public function edit($email)

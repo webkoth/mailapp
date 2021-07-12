@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <a class="btn btn-outline-primary my-4" href="{{ route('newsletters.index') }}"><i class="fas fa-arrow-left"></i></a>
+    <a class="btn btn-outline-primary my-4" href="{{ route('members.index') }}"><i class="fas fa-arrow-left"></i></a>
     @if (session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
@@ -18,7 +18,7 @@
         <tbody>
         <tr>
 
-            <form method="post" action="{{ route('newsletters.update', $member['email_address']) }}" style="display: inline-block">
+            <form method="post" action="{{ route('members.update', $member['email_address']) }}" style="display: inline-block">
                 @csrf
                 @method('PUT')
                 <td>
